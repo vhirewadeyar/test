@@ -1,0 +1,7 @@
+
+
+- hosts: client
+  become: yes
+  tasks:
+      - name: To run the docker container
+        command: docker run -it -d vhirewadeyar/wordpress-1

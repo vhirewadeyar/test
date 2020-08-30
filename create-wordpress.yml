@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: create docker image using war file
+    command: sudo docker build -t wordpress-1:latest .
+    args:
+      chdir: /opt/k8s
+
+  - name: create tag to image
+    command: sudo docker tag wordpress vhirewadeyar/wordpress-1
+
+  - name: push image on to dockerhub
+    command: sudo docker push vhirewadeyar/wordpress-1
+
+  - name: remove docker images form ansible server
+    command: sudo docker rmi  wordpress:latest vhirewadeyar/wordpress-1
+    ignore_errors: yes
+
+- hosts: client
+  become: yes
+  tasks:
+      - name: To run the docker container
+        command: docker run -it -d -p 8080:80 vhirewadeyar/wordpress-1
+
+
+    #  - name: Executing the docker file
+    #    command: ansible-playbook execute-docker.yml
